@@ -14,5 +14,5 @@
 .glide/
 
 #Murat's addition
-**/.idea/*.iml
-**/.idea/*.xml
+**/.idea/**/*.iml
+**/.idea/**/*.xml
