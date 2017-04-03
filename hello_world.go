@@ -2,12 +2,19 @@ package main
 
 import (
 	"fmt"
-	"net/http"
 )
 
 func main() {
 	fmt.Println("hello")
-	http.ListenAndServe("asd", nil)
+
+	pipe := make(chan string)
+
+	go func() {
+		fmt.Println(<-pipe)
+	}()
+
+	pipe <- "deneme"
+	close(pipe)
+
+	fmt.Scanln()
 }
-
-
