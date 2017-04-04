@@ -16,3 +16,4 @@
 #Murat's addition
 **/.idea/**/*.iml
 **/.idea/**/*.xml
+*.o
