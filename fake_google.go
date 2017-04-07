@@ -4,6 +4,10 @@ import (
 	"fmt"
 	"math/rand"
 	"time"
+	_ "expvar"
+	"net/http"
+	"github.com/stackimpact/stackimpact-go"
+	"encoding/json"
 )
 
 type Result string
@@ -54,7 +58,36 @@ func fakeSearch(kind string) Search {
 	}
 }
 
+func fakeGoogleHandler(w http.ResponseWriter, r *http.Request) {
+	rand.Seed(time.Now().UnixNano())
+	//start := time.Now()
+	results := Google("golang")
+	//elapsed := time.Since(start)
+	//fmt.Println(results)
+	//fmt.Println(elapsed)
+
+	b, _ := json.Marshal(results)
+	p := &Page{Title: "Google Search Results", Body: b}
+
+	fmt.Fprintf(w, "<h1>%s</h1><div>%s</div>", p.Title, p.Body)
+}
+
+type Page struct {
+	Title string
+	Body  []byte
+}
+
 func main() {
+	// for StackImpact Monitor
+	agent := stackimpact.NewAgent()
+	agent.Start(stackimpact.Options{
+		AgentKey: "9593b1747aa6ef5466e2340b08a5bcbe820292ab",
+		AppName: "MyGoApp",
+	})
+
+	http.HandleFunc("/google/", fakeGoogleHandler)
+	http.ListenAndServe(":8080", nil) //expvarmon will poll port 8080
+
 	rand.Seed(time.Now().UnixNano())
 	start := time.Now()
 	results := Google("golang")
